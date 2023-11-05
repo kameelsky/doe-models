@@ -11,6 +11,7 @@ from statsmodels.api import qqplot
 from tabulate import tabulate
 
 sns.set_style("ticks")
+sns.set_context("notebook")
 
 @dataclass
 class Model:
