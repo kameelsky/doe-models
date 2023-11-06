@@ -366,11 +366,13 @@ class LIQ(Model):
     x1_mesh: np.ndarray = field(init=False, repr=False) # X1 Meshgrid 
     x2_mesh: np.ndarray = field(init=False, repr=False) # X2 Meshgrid 
     y_mesh: np.ndarray = field(init=False, repr=False) # Predicted values (meshgrid)
+    substitutions: list[tuple] = field(init=False, repr=False) # Substitutions
+    linear_equation: tuple = field(init=False, repr=False)
 
-    def _model(self) -> (equation, symbols, coefficients_symbols, coefficients, dfdx1, dfdx2, covariance, equation_subs, dfdx1_subs, dfdx2_subs, y_hat, x1_mesh, x2_mesh, y_mesh):
+    def _model(self) -> (equation, symbols, coefficients_symbols, coefficients, dfdx1, dfdx2, covariance, equation_subs, dfdx1_subs, dfdx2_subs, y_hat, x1_mesh, x2_mesh, y_mesh, substitutions):
 
         # Symbols and equtation
-        global b0, b1, b2, b12, b11, b22, x1, x2, substitutions, function
+        global b0, b1, b2, b12, b11, b22, x1, x2, function
         b0, b1, b2, b12, b11, b22, x1, x2 = smp.symbols("beta_0, beta_1, beta_2, beta_12, beta_11, beta_22, x_1, x_2")
         self.equation = b0 + b1 * x1 + b2 * x2 + b11 * x1**2 + b22 * x2**2 + b12 * x1 * x2
         self.symbols = b0, b1, b2, b12, b11, b22, x1, x2
@@ -388,10 +390,10 @@ class LIQ(Model):
                                                        p0=(1.0, 1.0, 1.0, 1.0, 1.0, 1.0), method="lm")
         
         # Substitute coefficients using a loop
-        substitutions = [(symbol, coefficient) for symbol, coefficient in zip(self.coefficients_symbols, self.coefficients)]
-        self.equation_subs = self.equation.subs(substitutions)
-        self.dfdx1_subs = self.dfdx1.subs(substitutions)
-        self.dfdx2_subs = self.dfdx2.subs(substitutions)
+        self.substitutions = [(symbol, coefficient) for symbol, coefficient in zip(self.coefficients_symbols, self.coefficients)]
+        self.equation_subs = self.equation.subs(self.substitutions)
+        self.dfdx1_subs = self.dfdx1.subs(self.substitutions)
+        self.dfdx2_subs = self.dfdx2.subs(self.substitutions)
 
         # Meshgrid
         self.y_hat = function((self.Data[self.x_1], self.Data[self.x_2]), *self.coefficients)
@@ -399,14 +401,15 @@ class LIQ(Model):
                                                  np.linspace(min(self.Data[self.x_2]), max(self.Data[self.x_2]), 100))
         self.y_mesh = function((self.x1_mesh, self.x2_mesh), *self.coefficients)
 
-    def solve(self) -> None:
+    def solve(self) -> linear_equation:
 
         # Linear algebra and matrices
         variables = (x1, x2)
         A, B = smp.linear_eq_to_matrix([self.dfdx1, self.dfdx2], variables)
+        self.linear_equation = (A, B)
 
-        solution = (A.inv() @ B).subs(substitutions)
-        eigenvalues = [round(eigenvalue, ndigits=2) for eigenvalue, multiplicity in dict(A.subs(substitutions).eigenvals()).items()]
+        solution = (A.inv() @ B).subs(self.substitutions)
+        eigenvalues = [round(eigenvalue, ndigits=2) for eigenvalue, multiplicity in dict(A.subs(self.substitutions).eigenvals()).items()]
         critical_value = function((solution[0], solution[1]), *self.coefficients)
 
         d = {self.x_1: round(solution[0], ndigits=2), self.x_2: round(solution[1], ndigits=2), "Critical value": round(critical_value, ndigits=2), "Hessian matrix eigenvalues": eigenvalues}
@@ -499,11 +502,12 @@ class LIT(Model):
     x1_mesh: np.ndarray = field(init=False, repr=False) # X1 Meshgrid 
     x2_mesh: np.ndarray = field(init=False, repr=False) # X2 Meshgrid 
     y_mesh: np.ndarray = field(init=False, repr=False) # Predicted values (meshgrid)
+    substitutions: list[tuple] = field(init=False, repr=False) # Substitutions
 
-    def _model(self) -> (equation, symbols, coefficients_symbols, coefficients, dfdx1, dfdx2, covariance, equation_subs, y_hat, x1_mesh, x2_mesh, y_mesh):
+    def _model(self) -> (equation, symbols, coefficients_symbols, coefficients, dfdx1, dfdx2, covariance, equation_subs, y_hat, x1_mesh, x2_mesh, y_mesh, substitutions):
 
         # Symbols and equtation
-        global b0, b1, b2, b12, x1, x2, substitutions, function
+        global b0, b1, b2, b12, x1, x2, function
         b0, b1, b2, b12, x1, x2 = smp.symbols("beta_0, beta_1, beta_2, beta_12, x_1, x_2")
         self.equation = b0 + b1 * x1 + b2 * x2 + b12 * x1 * x2
         self.symbols = b0, b1, b2, b12, x1, x2
@@ -521,10 +525,10 @@ class LIT(Model):
                                                        p0=(1.0, 1.0, 1.0, 1.0), method="lm")
         
         # Substitute coefficients using a loop
-        substitutions = [(symbol, coefficient) for symbol, coefficient in zip(self.coefficients_symbols, self.coefficients)]
-        self.equation_subs = self.equation.subs(substitutions)
-        self.dfdx1_subs = self.dfdx1.subs(substitutions)
-        self.dfdx2_subs = self.dfdx2.subs(substitutions)
+        self.substitutions = [(symbol, coefficient) for symbol, coefficient in zip(self.coefficients_symbols, self.coefficients)]
+        self.equation_subs = self.equation.subs(self.substitutions)
+        self.dfdx1_subs = self.dfdx1.subs(self.substitutions)
+        self.dfdx2_subs = self.dfdx2.subs(self.substitutions)
 
         # Meshgrid
         self.y_hat = function((self.Data[self.x_1], self.Data[self.x_2]), *self.coefficients)
@@ -608,11 +612,12 @@ class LIN(Model):
     x1_mesh: np.ndarray = field(init=False, repr=False) # X1 Meshgrid 
     x2_mesh: np.ndarray = field(init=False, repr=False) # X2 Meshgrid 
     y_mesh: np.ndarray = field(init=False, repr=False) # Predicted values (meshgrid)
+    substitutions: list[tuple] = field(init=False, repr=False) # Substitutions
 
-    def _model(self) -> (equation, symbols, coefficients_symbols, coefficients, dfdx1, dfdx2, covariance, equation_subs, y_hat, x1_mesh, x2_mesh, y_mesh):
+    def _model(self) -> (equation, symbols, coefficients_symbols, coefficients, dfdx1, dfdx2, covariance, equation_subs, y_hat, x1_mesh, x2_mesh, y_mesh, substitutions):
 
         # Symbols and equtation
-        global b0, b1, b2, x1, x2, substitutions, function
+        global b0, b1, b2, x1, x2, function
         b0, b1, b2, x1, x2 = smp.symbols("beta_0, beta_1, beta_2, x_1, x_2")
         self.equation = b0 + b1 * x1 + b2 * x2
         self.symbols = b0, b1, b2, x1, x2
@@ -630,10 +635,10 @@ class LIN(Model):
                                                        p0=(1.0, 1.0, 1.0), method="lm")
         
         # Substitute coefficients using a loop
-        substitutions = [(symbol, coefficient) for symbol, coefficient in zip(self.coefficients_symbols, self.coefficients)]
-        self.equation_subs = self.equation.subs(substitutions)
-        self.dfdx1_subs = self.dfdx1.subs(substitutions)
-        self.dfdx2_subs = self.dfdx2.subs(substitutions)
+        self.substitutions = [(symbol, coefficient) for symbol, coefficient in zip(self.coefficients_symbols, self.coefficients)]
+        self.equation_subs = self.equation.subs(self.substitutions)
+        self.dfdx1_subs = self.dfdx1.subs(self.substitutions)
+        self.dfdx2_subs = self.dfdx2.subs(self.substitutions)
 
         # Meshgrid
         self.y_hat = function((self.Data[self.x_1], self.Data[self.x_2]), *self.coefficients)
