@@ -172,7 +172,7 @@ class Model:
             "Significance": [significance, "", ""]
         }, index=["Lack of fit", "Pure error", "Error"])
 
-    def _coefficients_pvalues(self) -> coefficients_stats:
+    def _coefficients_stats(self, round_number: int = 4) -> coefficients_stats:
 
         # Errors from the covariance matrix
         variances = np.diagonal(self.covariance)
@@ -205,12 +205,13 @@ class Model:
             coefficient: [value, error, t_stat, pvalue, sig] 
             for coefficient, value, error, t_stat, pvalue, sig in zip(
             self.coefficients_symbols,
-            self.coefficients,
-            errors,
-            tvalues,
-            pvalues,
+            self.coefficients.astype(np.float64).round(round_number),
+            errors.astype(np.float64).round(round_number),
+            tvalues.astype(np.float64).round(round_number),
+            pvalues.astype(np.float64).round(round_number),
             significance_list)
         }, index=["Value", "Standard error", "t Statistic", "p-value", "Significance"])
+
 
     def _stats(self) -> stats: # Stats of the model
         self.stats = pd.DataFrame({
@@ -477,7 +478,7 @@ class LIQ(Model):
         self._SST(), self._SSE(), self._SSR()
         self._r_squared()
         self._anova()
-        self._coefficients_pvalues()
+        self._coefficients_stats()
         self._stats()
         self._DataFramePredicted()
         try:
@@ -587,7 +588,7 @@ class LIT(Model):
         self._SST(), self._SSE(), self._SSR()
         self._r_squared()
         self._anova()
-        self._coefficients_pvalues()
+        self._coefficients_stats()
         self._stats()
         self._DataFramePredicted()
         try:
@@ -697,7 +698,7 @@ class LIN(Model):
         self._SST(), self._SSE(), self._SSR()
         self._r_squared()
         self._anova()
-        self._coefficients_pvalues()
+        self._coefficients_stats()
         self._stats()
         self._DataFramePredicted()
         try:
