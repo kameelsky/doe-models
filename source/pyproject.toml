@@ -1,0 +1,8 @@
+[build-system]
+    requires = ["setuptools", "setuptools-scm"]
+    build-backend = "setuptools.build_meta"
+
+[project]
+    name = "doe-models"
+    version = "1.0.0"
+    authors = [{name = "Kamil Przytulski", email = "kameelsky@gmail.com"}]

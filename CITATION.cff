@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: Design of Experiments models for data analysis
+message: "If you use this software, please cite it as below."
+authors:
+  - name: Kamil Przytulski
+license: MIT
+license-url: https://github.com/kameelsky/doe-models/blob/main/LICENSE.md
+repository-code: https://github.com/kameelsky/doe-models
+keywords:
+  - python
+  - data science
+  - design of experiments
+type: software
+url: "https://github.com/kameelsky/doe-models"
+version: 1.0.0
+year: 2023
