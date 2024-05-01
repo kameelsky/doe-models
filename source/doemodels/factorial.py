@@ -22,6 +22,7 @@ def plotting(size: tuple[int] = (15, 5)):
         yield fig, axes
     finally:
         plt.show()
+        plt.style.use("default")
 
 @dataclass
 class Factorial2k:

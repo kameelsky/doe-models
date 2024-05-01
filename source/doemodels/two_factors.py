@@ -320,34 +320,6 @@ class Model:
         ax.set_title(f"{self.y_i}({self.x_1}, {self.x_2})")
         plt.show()
 
-    def gradient(self, figure_size: tuple = (7,5), dpi: int = 300, step_x: float = 1, step_y: float = 1, 
-                 contours_color: str = "black", contours_number: int = 15, contours_alpha: float = 0.8, spacing: float = 5, scale: float = 0.25, units: str = "x",
-                 width: float = 0.05, headwidth: float = 3, headlength: float = 5, headaxislength: float = 5, cmap: str = "coolwarm"):
-        
-        plt.figure(figsize=figure_size, dpi=dpi)
-
-        plt.contour(self.x1_mesh, self.x2_mesh, self.y_mesh, levels=contours_number, colors=contours_color, alpha=contours_alpha)
-
-        plt.xlabel(self.x_1, fontweight="bold")
-        plt.xticks(ticks=(np.arange(min(self.Data[self.x_1]), max(self.Data[self.x_1] + step_x), step_x)))
-        
-        plt.yticks(ticks=(np.arange(min(self.Data[self.x_2]), max(self.Data[self.x_2] + step_y), step_y)))
-        plt.ylabel(self.x_2, fontweight="bold")
-
-        # Gradient
-        dy, dx = np.gradient(self.y_mesh)
-
-        # Magnitude
-        M = np.hypot(dy, dx)
-
-        plt.quiver(self.x1_mesh[::spacing, ::spacing], self.x2_mesh[::spacing, ::spacing], dx[::spacing, ::spacing], dy[::spacing, ::spacing], 
-                M[::spacing, ::spacing], pivot='tip', units = units, scale = 1 / scale, cmap=cmap,
-                width = width, headwidth = headwidth, headlength = headlength, headaxislength = headaxislength)
-        
-        plt.title(f"{self.y_i}({self.x_1}, {self.x_2}) gradient vectors")
-    
-        plt.show()
-
     def data_plot(self) -> None:
 
         fig, axes = plt.subplots(1,2, figsize=(11,5))
