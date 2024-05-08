@@ -9,23 +9,23 @@ This python package has been developed to analyze experimental data obtained wit
 Package can help with an analysis of screening experiemnts conducted with utilization of a commonly used design **factorial 2<sup>k</sup>**.
 It is also capable of model validation, visualization of the outcome and finding the critical values in two factors optimization. Please check how to use it in [real case scenarios](./examples/).
 
-## Dependencies
+## Dependencies and installation
 The application has a few which can be installed with python [pip module](./requirements.txt):
 
 ```shell
-python -m pip install -r doe-models/requirements.txt
-```
-or [conda](./requirements.yml) package manager:
-```shell
-conda install -f doe-models/requirements.yml
+python -V # Checks for python version. Python 3.11 
+git clone https://github.com/kameelsky/doe-models.git # Downloads the repository
+python -m pip install -r doe-models/requirements.txt # Installs dependencies
+python -m pip install doe-models/source # Installs doe-models
 ```
 
-## Downloading and installation
-Download the repository and install the package with python 'pip' module.
+or using [conda](./requirements.yml):
 
 ```shell
-git clone https://github.com/kameelsky/doe-models.git
-python -m pip install doe-models/source
+git clone https://github.com/kameelsky/doe-models.git # Downloads the repository
+conda env create --file doe-models/requirements.yml # Creates a virtual environment
+conda activate doe-models # Activates the virtual environment
+python -m pip install doe-models/source # Installs doe-models
 ```
 
 ## License

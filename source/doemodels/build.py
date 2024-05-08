@@ -7,7 +7,7 @@ from scipy.stats import f, shapiro, anderson, normaltest
 import statsmodels
 import statsmodels.formula.api as smf
 import statsmodels.api as sm
-from statsmodels.stats.diagnostic import het_breuschpagan, het_white
+from statsmodels.stats.diagnostic import het_breuschpagan
 import warnings
 
 sns.set_style("ticks")

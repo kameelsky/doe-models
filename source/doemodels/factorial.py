@@ -9,8 +9,6 @@ from typing import Union
 import warnings
 from pandas.errors import PerformanceWarning
 warnings.filterwarnings(action="ignore", category=PerformanceWarning)
-import statsmodels.formula.api as smf
-import statsmodels.api as sm
 
 @contextmanager
 def plotting(size: tuple[int] = (15, 5)):
