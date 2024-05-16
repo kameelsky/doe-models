@@ -133,7 +133,6 @@ class Model:
     def homoscedasticity(self, groups: list[str]):
 
         residuals = self.statsmodel.resid
-        group_data = [self.data[group] for group in groups]
         bp_test = het_breuschpagan(residuals, self.statsmodel.model.exog)
 
         tests = ["Breusch-Pagan"]
