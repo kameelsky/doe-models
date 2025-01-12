@@ -23,7 +23,6 @@ python -m pip install doe-models/source # Installs doe-models
 
 ## Examples
 
-### Screen
 ```python
 # Import the libraries
 from doemodels.factorial import Factorial2k
@@ -65,4 +64,4 @@ design.pareto()
 
 ![pareto](./data/pareto.png)
 
-More detailed analysis can be found in the [jupyter notebook](https://github.com/kameelsky/data-science/blob/main/Toolbox/DOE.ipynb).
+More detailed analysis can be found in the [jupyter notebook](https://github.com/kameelsky/data-science/blob/master/Toolbox/DOE.ipynb).
