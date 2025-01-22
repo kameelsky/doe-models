@@ -59,7 +59,7 @@ design.effect(response=[45, 65, 60, 80, 100, 45, 75, 96], n=1, graph=True)
 
 ```python
 # Plot a Pareto chart
-design.pareto()
+design.pareto(graph=True)
 ```
 
 ![pareto](./data/pareto.png)

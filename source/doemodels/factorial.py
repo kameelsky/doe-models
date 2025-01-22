@@ -85,9 +85,9 @@ class Factorial2k:
     def effects(self, response: list[float], n: int = 1, graph: bool = False):
         if self.aliases:
             labels = []
-            for key, value in self.aliases_filtered.items():
-                aliases = value
-                labels.append(f"{key} -> {aliases}")
+            for key, aliases in self.aliases_filtered.items():
+                aliases = " = ".join(aliases)
+                labels.append(f"{key} = {aliases}")
             df = self.DataFrame_AntiAliased
             division = df["A"].value_counts().values[1]
             df["Y"] = response
