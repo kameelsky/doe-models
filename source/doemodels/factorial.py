@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from contextlib import contextmanager
 from itertools import combinations
-import pyDOE2 as doe
+import pyDOE3 as doe
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -57,6 +57,11 @@ class Factorial2k:
             for i in principal_fraction:
                 self.DataFrame = self.DataFrame.query(f"{i} == 1")
                 self.DataFrame = self.DataFrame.drop(i, axis=1)
+        cols_to_drop = [
+            col for col in self.DataFrame.columns
+            if set(self.DataFrame[col].unique()).issubset({1, -1}) and len(self.DataFrame[col].unique()) == 1
+        ]
+        self.DataFrame = self.DataFrame.drop(columns=cols_to_drop)
         self.DataFrame.reset_index(drop=True, inplace=True)
         self.DataFrame.index.name = "Experiments"
         self.DataFrame.index += 1

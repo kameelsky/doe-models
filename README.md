@@ -12,7 +12,7 @@ Package can help with an analysis of screening experiemnts conducted with utiliz
 The application has a few which can be installed with python [pip module](./requirements.txt):
 
 ```shell
-python -V # Checks for python version. Python 3.11 
+python -V # Checks for python version. Python 3.12
 git clone https://github.com/kameelsky/doe-models.git # Downloads the repository
 python -m pip install -r doe-models/requirements.txt # Installs dependencies
 python -m pip install doe-models/source # Installs doe-models
